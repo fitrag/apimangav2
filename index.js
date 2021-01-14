@@ -1,7 +1,7 @@
 const cheerio = require('cheerio')
 const express = require('express')
 const axios = require('axios')
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8000
 const cors = require('cors')
 const app = express()
 
@@ -44,6 +44,8 @@ app.get("/manga/v2/page/:id", (req, res) => {
 
             res.json(objAnime)
 
+        }).catch(e => {
+                res.send({message:"Upss"})
         })
 })
 
@@ -136,6 +138,8 @@ app.get("/manga/v2/chapter/:slug", (req, res) => {
             res.json(obj)
             
 
+        }).catch(e => {
+                res.send({message:"Upss"})
         })
 })
 
