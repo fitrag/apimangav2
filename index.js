@@ -11,7 +11,7 @@ app.get("/", (req, res) => {
     res.send({message:"Hallo"})
 })
 
-app.get("/manga/v2/page/:id", (req, res) => {
+app.get("/manga/page/:id", (req, res) => {
     let pageId = parseInt(req.params.id)
     let url = pageId == 1 ? 'https://komikcast.com/daftar-komik/?order=update' : 'https://komikcast.com/daftar-komik/page/' + pageId +'/?order=update'
 
@@ -49,7 +49,7 @@ app.get("/manga/v2/page/:id", (req, res) => {
         })
 })
 
-app.get("/manga/v2/detail/:slug", (req, res) => {
+app.get("/manga/detail/:slug", (req, res) => {
     const slug = req.params.slug
         axios.get("https://komikcast.com/komik/" + slug)
         .then(response => {
@@ -106,7 +106,7 @@ app.get("/manga/v2/detail/:slug", (req, res) => {
         })
 })
 
-app.get("/manga/v2/chapter/:slug", (req, res) => {
+app.get("/manga/chapter/:slug", (req, res) => {
     const slug = req.params.slug
         axios.get("https://komikcast.com/chapter/" + slug)
         .then(response => {
