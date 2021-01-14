@@ -7,7 +7,7 @@ const app = express()
 
 app.use(cors())
 
-app.get("/". (req, res) => {
+app.get("/", (req, res) => {
         res.send({message:"Hallo"})
 })
 
@@ -42,6 +42,8 @@ app.get("/manga/v2/page/:id", (req, res) => {
                 obj.anime_list = anime
             })
             res.json(obj)
+        }).catch(e => {
+                res.send({message:"Upss"})
         })
 })
 
@@ -97,6 +99,8 @@ app.get("/manga/v2/detail/:slug", (req, res) => {
                 obj.chapter_list = chapter
             })
             res.json(obj)
+        }).catch(e => {
+                res.send({message:"Upss"})
         })
 })
 
@@ -128,6 +132,8 @@ app.get("/manga/v2/chapter/:slug", (req, res) => {
                 obj.chapter = chapter
             })
             res.json(obj)
+        }).catch(e => {
+                res.send({message:"Upss"})
         })
 })
 
