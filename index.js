@@ -7,6 +7,10 @@ const app = express()
 
 app.use(cors())
 
+app.get("/". (req, res) => {
+        res.send({message:"Hallo"})
+})
+
 app.get("/manga/v2/page/:id", (req, res) => {
     const pageId = parseInt(req.params.id)
     let url = pageId == 1 ? 'https://komikcast.com/daftar-komik/?order=update' : 'https://komikcast.com/daftar-komik/page/'+ pageId +'/?order=update'
