@@ -8,22 +8,22 @@ const app = express()
 app.use(cors())
 
 app.get("/", (req, res) => {
-        res.send({message:"Hallo"})
+    res.send({message:"Hallo"})
 })
 
 app.get("/manga/v2/page/:id", (req, res) => {
-    const pageId = parseInt(req.params.id)
-    let url = pageId == 1 ? 'https://komikcast.com/daftar-komik/?order=update' : 'https://komikcast.com/daftar-komik/page/'+ pageId +'/?order=update'
+    let pageId = parseInt(req.params.id)
+    let url = pageId == 1 ? 'https://komikcast.com/daftar-komik/?order=update' : 'https://komikcast.com/daftar-komik/page/' + pageId +'/?order=update'
 
         axios.get(url)
         .then(response => {
             const $ = cheerio.load(response.data)
             const content = $(".bixbox")
-            const obj = {}
+            const objAnime = {}
             let anime = []
 
-            obj.currentPage = pageId
-            obj.nextPage = pageId + 1
+            objAnime.currentPage = pageId
+            objAnime.nextPage = pageId + 1
 
             content.find(".mrgn > .listupd > .bs").each((id,el) => {
                 let img = $(el).find(".bsx > a > .limit").find("img").attr("src")
@@ -39,11 +39,11 @@ app.get("/manga/v2/page/:id", (req, res) => {
                     link
                 })
 
-                obj.anime_list = anime
+                objAnime.anime_list = anime
             })
-            res.json(obj)
-        }).catch(e => {
-                res.send({message:"Upss"})
+
+            res.json(objAnime)
+
         })
 })
 
@@ -55,7 +55,7 @@ app.get("/manga/v2/detail/:slug", (req, res) => {
             const content = $("article")
 
             const obj = {}
-            let chapter = []
+            let list_chapter = []
             let detail = []
 
             content.find(".animefull > .bigcover > .ime").each((id, el) => {
@@ -91,12 +91,12 @@ app.get("/manga/v2/detail/:slug", (req, res) => {
                 let chapter_name = $(el).find(".leftoff").text()
                 let chapter_link = $(el).find(".leftoff > a").attr("href").replace("https://komikcast.com/chapter/","").replace("/","")
 
-                chapter.push({
+                list_chapter.push({
                     chapter_name,
                     chapter_link
                 })
 
-                obj.chapter_list = chapter
+                obj.chapter_list = list_chapter
             })
             res.json(obj)
         }).catch(e => {
@@ -111,9 +111,9 @@ app.get("/manga/v2/chapter/:slug", (req, res) => {
             const $ = cheerio.load(response.data)
             const content = $(".postarea")
 
-            let chapter = []
+            let chap = []
             const obj = {}
-            
+
             content.find("article > .maincontent > .nextprev").each((id,el) => {
                 obj.next_link = $(el).find("a:nth-child(2)").attr("href").replace("https://komikcast.com/chapter/","").replace("/","")
             })
@@ -125,15 +125,17 @@ app.get("/manga/v2/chapter/:slug", (req, res) => {
             content.find("article > .maincontent > #readerarea > img").each((id,el) => {
                 let chapter_image = $(el).attr("src")
 
-                chapter.push({
+                chap.push({
                     chapter_image,
                     chapter_number : id
                 })
-                obj.chapter = chapter
+
+                obj.chapter = chap
             })
+
             res.json(obj)
-        }).catch(e => {
-                res.send({message:"Upss"})
+            
+
         })
 })
 
