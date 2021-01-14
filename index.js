@@ -9,7 +9,7 @@ app.use(cors())
 
 app.get("/manga/v2/page/:id", (req, res) => {
     const pageId = parseInt(req.params.id)
-    let url = pageId == 1 ? 'https://komikcast.com/daftar-komik/?order=update' : 'https://komikcast.com/daftar-komik/page/' + pageId +'/?order=update'
+    let url = pageId == 1 ? 'https://komikcast.com/daftar-komik/?order=update' : 'https://komikcast.com/daftar-komik/page/'+ pageId +'/?order=update'
 
         axios.get(url)
         .then(response => {
@@ -37,9 +37,7 @@ app.get("/manga/v2/page/:id", (req, res) => {
 
                 obj.anime_list = anime
             })
-
             res.json(obj)
-
         })
 })
 
@@ -94,10 +92,7 @@ app.get("/manga/v2/detail/:slug", (req, res) => {
 
                 obj.chapter_list = chapter
             })
-
             res.json(obj)
-            
-
         })
 })
 
@@ -110,9 +105,7 @@ app.get("/manga/v2/chapter/:slug", (req, res) => {
 
             let chapter = []
             const obj = {}
-
             
-
             content.find("article > .maincontent > .nextprev").each((id,el) => {
                 obj.next_link = $(el).find("a:nth-child(2)").attr("href").replace("https://komikcast.com/chapter/","").replace("/","")
             })
@@ -128,13 +121,9 @@ app.get("/manga/v2/chapter/:slug", (req, res) => {
                     chapter_image,
                     chapter_number : id
                 })
-
                 obj.chapter = chapter
             })
-
             res.json(obj)
-            
-
         })
 })
 
