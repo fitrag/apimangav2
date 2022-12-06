@@ -11,6 +11,92 @@ app.get("/", (req, res) => {
   res.send({ message: "Hallo" });
 });
 
+app.get("/manga/v2/manga-project", (req, res) => {
+  let url = "https://komikcast.site";
+
+  axios.get(url).then((response) => {
+    const $ = cheerio.load(response.data);
+    const content = $(".postbody");
+    const obj = {};
+    let anime = [];
+
+    obj.author = "Fadila Fitra Kusuma Jaya";
+    obj.url = url;
+
+    content.find(".bixbox:nth-child(1) > .listupd > .utao").each((id, el) => {
+      let img = $(el).find(".uta > .imgu > a").find("img").attr("src");
+      let judul = $(el).find(".uta > .luf > a > h3").text().trim();
+      let chapter = $(el)
+        .find(".uta > .luf > ul > li:first-child > a")
+        .text()
+        .trim();
+      let link = $(el)
+        .find("a")
+        .attr("href")
+        .replace("https://komikcast.site/komik/", "")
+        .replace("/", "");
+      let chapter_update = $(el)
+        .find(".uta > .luf > ul > li:first-child > span")
+        .text()
+        .trim();
+      anime.push({
+        judul,
+        img,
+        chapter_update,
+        chapter,
+        link,
+      });
+
+      obj.anime_list = anime;
+    });
+
+    res.json(obj);
+  });
+});
+
+app.get("/manga/v2/manga-update", (req, res) => {
+  let url = "https://komikcast.site";
+
+  axios.get(url).then((response) => {
+    const $ = cheerio.load(response.data);
+    const content = $(".postbody");
+    const obj = {};
+    let anime = [];
+
+    obj.author = "Fadila Fitra Kusuma Jaya";
+    obj.url = url;
+
+    content.find(".bixbox:nth-child(2) > .listupd > .utao").each((id, el) => {
+      let img = $(el).find(".uta > .imgu > a").find("img").attr("src");
+      let judul = $(el).find(".uta > .luf > a > h3").text().trim();
+      let chapter = $(el)
+        .find(".uta > .luf > ul > li:first-child > a")
+        .text()
+        .trim();
+      let link = $(el)
+        .find("a")
+        .attr("href")
+        .replace("https://komikcast.site/komik/", "")
+        .replace("/", "");
+      let chapter_update = $(el)
+        .find(".uta > .luf > ul > li:first-child > span")
+        .text()
+        .trim();
+      anime.push({
+        judul,
+        img,
+        chapter_update,
+        chapter,
+        link,
+      });
+
+      obj.anime_list = anime;
+    });
+
+    res.json(obj);
+  });
+});
+
 app.get("/manga/v2/page/:id", (req, res) => {
   const pageId = parseInt(req.params.id);
   let url =
