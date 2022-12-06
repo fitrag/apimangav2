@@ -95,36 +95,27 @@ app.get("/manga/v2/detail/:slug", (req, res) => {
       content
         .find(".komik_info-content > .komik_info-content-body")
         .each((id, el) => {
-          let title = $(el).find("h1.komik_info-content-body-title").text();
-          let status = $(el)
+          obj.title = $(el).find("h1.komik_info-content-body-title").text();
+          obj.status = $(el)
             .find(".komik_info-content-meta > span:nth-child(3)")
             .text()
             .replace("Status:", "")
             .trim();
-          let released = $(el)
+          obj.released = $(el)
             .find(".komik_info-content-meta > span:nth-child(1)")
             .text()
             .replace("Released:", "")
             .trim();
-          let author = $(el)
+          obj.author = $(el)
             .find(".komik_info-content-meta > span:nth-child(2)")
             .text()
             .replace("Author:", "")
             .trim();
-          let type = $(el)
+          obj.type = $(el)
             .find(".komik_info-content-meta > span:nth-child(4)")
             .text()
             .replace("Type:", "")
             .trim();
-
-          detail.push({
-            title,
-            status,
-            released,
-            author,
-            type,
-          });
-          obj.anime_detail = detail;
         });
 
       // Ambil genre Komik
