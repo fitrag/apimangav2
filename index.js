@@ -15,10 +15,9 @@ app.get("/manga/v2/page/:id", (req, res) => {
   const pageId = parseInt(req.params.id);
   let url =
     pageId == 1
-      ? "https://komikcast.site/daftar-komik/?orderby=update"
+      ? "https://komikcast.site/daftar-komik/"
       : "https://komikcast.site/daftar-komik/page/" +
-        pageId +
-        "/?orderby=update";
+        pageId;
 
   axios.get(url).then((response) => {
     const $ = cheerio.load(response.data);
