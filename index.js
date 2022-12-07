@@ -220,7 +220,7 @@ app.get("/manga/v2/detail/:slug", (req, res) => {
       // Ambil sinopsi komik
       content.find(".komik_info-description").each((id, el) => {
         obj.sinopsis = $(el)
-          .find(".komik_info-description-sinopsis > .infox > .desc")
+          .find(".komik_info-description-sinopsis")
           .text()
           .trim();
       });
