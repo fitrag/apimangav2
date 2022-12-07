@@ -261,24 +261,48 @@ app.get("/manga/v2/chapter/:slug", (req, res) => {
   const slug = req.params.slug;
   axios.get("https://komikcast.site/chapter/" + slug).then((response) => {
     const $ = cheerio.load(response.data);
-    const content = $("#chapter_body");
+    const content = $(".chapter_");
 
     let chap = [];
-    let links = [];
     const obj = {};
 
+    content.find(".chapter_headpost").each((id, el) => {
+      obj.judul = $(el).find("h1").text().trim();
+    });
     content
-      .find(".chapter_nav-control > .right-control > .nextprev > a")
+      .find(".chapter_nav-control > .right-control > .nextprev")
       .each((id, el) => {
-        let link = $(el)
-          .attr("href")
-          .replace("https://komikcast.site/chapter/", "");
-
-        links.push({
-          link,
-        });
-
-        obj.links = links;
+        if (
+          $(el).find("a:first-child").attr("rel") == "prev" &&
+          $(el).find("a:nth-child(2)").attr("rel") == "next"
+        ) {
+          obj.prevlink = $(el)
+            .find("a:first-child")
+            .attr("href")
+            .replace("https://komikcast.site/chapter/", "");
+          obj.nextlink = $(el)
+            .find("a:nth-child(2)")
+            .attr("href")
+            .replace("https://komikcast.site/chapter/", "");
+        } else if (
+          $(el).find("a:first-child").attr("rel") == "prev" &&
+          $(el).find("a:nth-child(2)") == ""
+        ) {
+          obj.prevlink = $(el)
+            .find("a")
+            .attr("href")
+            .replace("https://komikcast.site/chapter/", "");
+          obj.nextlink = "";
+        } else if (
+          $(el).find("a:first-child").attr("rel") == "next" &&
+          $(el).find("a:nth-child(2)") == ""
+        ) {
+          obj.nextlink = $(el)
+            .find("a")
+            .attr("href")
+            .replace("https://komikcast.site/chapter/", "");
+          obj.prevlink = "";
+        }
       });
 
     content.find(".main-reading-area > img").each((id, el) => {
