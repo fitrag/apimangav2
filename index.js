@@ -97,6 +97,79 @@ app.get("/manga/v2/manga-update", (req, res) => {
   });
 });
 
+app.get("/manga/v2/page/:id/:keyword", (req, res) => {
+  const pageId = parseInt(req.params.id);
+  const keyword = req.params.keyword;
+  let url =
+    pageId == 1
+      ? "https://komikcast.site/page/1/?s=" + keyword
+      : "https://komikcast.site/page/" + pageId + "/?s=" + keyword;
+
+  try {
+    axios
+      .get(url)
+      .then((response) => {
+        const $ = cheerio.load(response.data);
+        const content = $(".list-update");
+        const obj = {};
+        let anime = [];
+
+        obj.author = "Fadila Fitra Kusuma Jaya";
+        obj.url = url;
+        obj.currentPage = pageId;
+        obj.nextPage = pageId + 1;
+
+        content
+          .find(
+            ".list-update_items > .list-update_items-wrapper > .list-update_item"
+          )
+          .each((id, el) => {
+            let img = $(el)
+              .find("a > .list-update_item-image")
+              .find("img")
+              .attr("src");
+            let judul = $(el)
+              .find("a > .list-update_item-info > h3.title")
+              .text()
+              .trim();
+            let chapter = $(el)
+              .find("a > .list-update_item-info > .other > .chapter")
+              .text()
+              .trim();
+            let link = $(el)
+              .find("a")
+              .attr("href")
+              .replace("https://komikcast.site/komik/", "")
+              .replace("/", "");
+            let type = $(el)
+              .find("a > .list-update_item-image")
+              .find("span.type")
+              .text();
+            anime.push({
+              judul,
+              img,
+              type,
+              chapter,
+              link,
+            });
+
+            obj.anime_list = anime;
+          });
+
+        res.json(obj);
+      })
+      .catch(function () {
+        res.json({
+          message: "Ada yang tidak beres atau halaman tidak ditemukan",
+        });
+      });
+  } catch {
+    res.json({
+      message: "Ada yang tidak beres atau halaman tidak ditemukan",
+    });
+  }
+});
+
 app.get("/manga/v2/page/:id", (req, res) => {
   const pageId = parseInt(req.params.id);
   let url =
