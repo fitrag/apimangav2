@@ -55,7 +55,7 @@ app.get("/manga/v2/manga-project", (req, res) => {
 });
 
 app.get("/manga/v2/manga-update", (req, res) => {
-  let url = "https://komikcast.site";
+  let url = "https://komikcast.lol";
 
   axios.get(url).then((response) => {
     const $ = cheerio.load(response.data);
@@ -175,8 +175,7 @@ app.get("/manga/v2/page/:id", (req, res) => {
   let url =
     pageId == 1
       ? "https://komikcast.lol/daftar-komik/"
-      : "https://komikcast.lol/daftar-komik/page/" +
-        pageId;
+      : "https://komikcast.lol/daftar-komik/page/" + pageId;
 
   axios.get(url).then((response) => {
     const $ = cheerio.load(response.data);
@@ -343,7 +342,7 @@ app.get("/manga/v2/chapter/:slug", (req, res) => {
       obj.judul = $(el).find("h1").text().trim();
     });
     content
-      .find(".chapter_nav-control > .right-control > .nextprev")
+      .find(".chapter_body > .chapter_nav-control > .right-control > .nextprev")
       .each((id, el) => {
         if (
           $(el).find("a:first-child").attr("rel") == "prev" &&
@@ -394,5 +393,5 @@ app.get("/manga/v2/chapter/:slug", (req, res) => {
 });
 
 app.listen(PORT, function () {
-  console.log("Started application on port %d", 10000);
+  console.log("Started application on port %d", PORT);
 });
