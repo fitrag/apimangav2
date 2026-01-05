@@ -5,7 +5,7 @@ const PORT = process.env.PORT || 8080;
 const cors = require("cors");
 const app = express();
 
-const URL_TARGET = 'https://komikcast.bz'
+const URL_TARGET = 'https://komikcast03.com';
 
 app.use(cors());
 
@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/manga/v2/manga-project", (req, res) => {
-  let url = "https://komikcast.bz";
+  let url = "https://komikcast03.com";
 
   axios.get(url).then((response) => {
     const $ = cheerio.load(response.data);
@@ -26,15 +26,16 @@ app.get("/manga/v2/manga-project", (req, res) => {
     obj.url = url;
 
     content.find(".bixbox:nth-child(1) > .listupd > .utao").each((id, el) => {
-      let img = $(el).find(".uta > .imgu > a").find("img").attr("src");
+      let img = $(el).find(".uta > .imgu > a").find("img").attr("data-src");
       let judul = $(el).find(".uta > .luf > a > h3").text().trim();
       let chapter = $(el)
         .find(".uta > .luf > ul > li:first-child > a")
-        .text().replace(" ", "")
+        .text()
+        .replace(" ", "");
       let link = $(el)
         .find("a")
         .attr("href")
-        .replace("https://komikcast.bz/komik/", "")
+        .replace("https://komikcast03.com/komik/", "")
         .replace("/", "");
       let chapter_update = $(el)
         .find(".uta > .luf > ul > li:first-child > span")
@@ -56,7 +57,7 @@ app.get("/manga/v2/manga-project", (req, res) => {
 });
 
 app.get("/manga/v2/manga-update", (req, res) => {
-  let url = "https://komikcast.bz";
+  let url = "https://komikcast03.com";
 
   axios.get(url).then((response) => {
     const $ = cheerio.load(response.data);
@@ -77,7 +78,7 @@ app.get("/manga/v2/manga-update", (req, res) => {
       let link = $(el)
         .find("a")
         .attr("href")
-        .replace("https://komikcast.bz/komik/", "")
+        .replace("https://komikcast03.com/komik/", "")
         .replace("/", "");
       let chapter_update = $(el)
         .find(".uta > .luf > ul > li:first-child > span")
@@ -103,8 +104,8 @@ app.get("/manga/v2/page/:id/:keyword", (req, res) => {
   const keyword = req.params.keyword;
   let url =
     pageId == 1
-      ? "https://komikcast.bz/page/1/?s=" + keyword
-      : "https://komikcast.bz/page/" + pageId + "/?s=" + keyword;
+      ? "https://komikcast03.com/page/1/?s=" + keyword
+      : "https://komikcast03.com/page/" + pageId + "/?s=" + keyword;
 
   try {
     axios
@@ -140,7 +141,7 @@ app.get("/manga/v2/page/:id/:keyword", (req, res) => {
             let link = $(el)
               .find("a")
               .attr("href")
-              .replace("https://komikcast.bz/komik/", "")
+              .replace("https://komikcast03.com/komik/", "")
               .replace("/", "");
             let type = $(el)
               .find("a > .list-update_item-image")
@@ -175,8 +176,8 @@ app.get("/manga/v2/page/:id", (req, res) => {
   const pageId = parseInt(req.params.id);
   let url =
     pageId == 1
-      ? "https://komikcast.bz/daftar-komik/"
-      : "https://komikcast.bz/daftar-komik/page/" + pageId;
+      ? "https://komikcast03.com/daftar-komik/"
+      : "https://komikcast03.com/daftar-komik/page/" + pageId;
 
   axios.get(url).then((response) => {
     const $ = cheerio.load(response.data);
@@ -209,7 +210,7 @@ app.get("/manga/v2/page/:id", (req, res) => {
         let link = $(el)
           .find("a")
           .attr("href")
-          .replace("https://komikcast.bz/komik/", "")
+          .replace("https://komikcast03.com/komik/", "")
           .replace("/", "");
         let type = $(el)
           .find("a > .list-update_item-image")
@@ -233,24 +234,23 @@ app.get("/manga/v2/page/:id", (req, res) => {
 app.get("/manga/v2/detail/:slug", (req, res) => {
   const slug = req.params.slug;
   axios
-    .get("https://komikcast.bz/komik/" + slug)
+    .get("https://komikcast03.com/komik/" + slug)
     .then((response) => {
       const $ = cheerio.load(response.data);
       const content = $(".komik_info-body");
 
       const obj = {};
       let list_chapter = [];
-      let detail = [];
       let genres = [];
 
-      //   Ambil gambar cover komik
+      // Gambar cover komik
       content
         .find(".komik_info-content > .komik_info-content-thumbnail")
         .each((id, el) => {
           obj.img = $(el).find("img").attr("src");
         });
 
-      // Ambil Info Komik
+      // Info komik
       content
         .find(".komik_info-content > .komik_info-content-body")
         .each((id, el) => {
@@ -277,20 +277,18 @@ app.get("/manga/v2/detail/:slug", (req, res) => {
             .trim();
         });
 
-      // Ambil genre Komik
+      // Genre komik
       content
         .find(
           ".komik_info-content > .komik_info-content-body > .komik_info-content-genre > a"
         )
         .each((id, el) => {
           const genre = $(el).text();
-          genres.push({
-            genre,
-          });
+          genres.push({ genre });
           obj.genres = genres;
         });
 
-      // Ambil sinopsi komik
+      // Sinopsis
       content.find(".komik_info-description").each((id, el) => {
         obj.sinopsis = $(el)
           .find(".komik_info-description-sinopsis")
@@ -298,7 +296,7 @@ app.get("/manga/v2/detail/:slug", (req, res) => {
           .trim();
       });
 
-      //   Ambil semua chapter komik
+      // Chapter list
       content
         .find(
           ".komik_info-chapters > ul.komik_info-chapters-wrapper > li.komik_info-chapters-item"
@@ -309,7 +307,7 @@ app.get("/manga/v2/detail/:slug", (req, res) => {
           let chapter_link = $(el)
             .find("a.chapter-link-item")
             .attr("href")
-            .replace("https://komikcast.bz/chapter/", "")
+            .replace("https://komikcast03.com/chapter/", "")
             .replace("/", "");
 
           list_chapter.push({
@@ -322,7 +320,7 @@ app.get("/manga/v2/detail/:slug", (req, res) => {
         });
       res.json(obj);
     })
-    .catch((e) => {
+    .catch(() => {
       res.send({
         message: "Upss ada yang tidak beres",
         author: "Fadila Fitra Kusuma Jaya",
@@ -332,7 +330,7 @@ app.get("/manga/v2/detail/:slug", (req, res) => {
 
 app.get("/manga/v2/chapter/:slug", (req, res) => {
   const slug = req.params.slug;
-  axios.get("https://komikcast.bz/chapter/" + slug).then((response) => {
+  axios.get("https://komikcast03.com/chapter/" + slug).then((response) => {
     const $ = cheerio.load(response.data);
     const content = $(".chapter_");
 
@@ -352,11 +350,11 @@ app.get("/manga/v2/chapter/:slug", (req, res) => {
           obj.prevlink = $(el)
             .find("a:first-child")
             .attr("href")
-            .replace("https://komikcast.bz/chapter/", "");
+            .replace("https://komikcast03.com/chapter/", "");
           obj.nextlink = $(el)
             .find("a:nth-child(2)")
             .attr("href")
-            .replace("https://komikcast.bz/chapter/", "");
+            .replace("https://komikcast03.com/chapter/", "");
         } else if (
           $(el).find("a:first-child").attr("rel") == "prev" &&
           $(el).find("a:nth-child(2)") == ""
@@ -364,7 +362,7 @@ app.get("/manga/v2/chapter/:slug", (req, res) => {
           obj.prevlink = $(el)
             .find("a")
             .attr("href")
-            .replace("https://komikcast.bz/chapter/", "");
+            .replace("https://komikcast03.com/chapter/", "");
           obj.nextlink = "";
         } else if (
           $(el).find("a:first-child").attr("rel") == "next" &&
@@ -373,7 +371,7 @@ app.get("/manga/v2/chapter/:slug", (req, res) => {
           obj.nextlink = $(el)
             .find("a")
             .attr("href")
-            .replace("https://komikcast.bz/chapter/", "");
+            .replace("https://komikcast03.com/chapter/", "");
           obj.prevlink = "";
         }
       });
