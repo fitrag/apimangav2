@@ -25,8 +25,12 @@ app.get("/manga/v2/manga-project", (req, res) => {
     obj.author = "Fadila Fitra Kusuma Jaya";
     obj.url = url;
 
-    content.find(".bixbox:nth-child(1) > .listupd > .utao").each((id, el) => {
-      let img = $(el).find(".uta > .imgu > a").find("img").attr("data-src");
+    // Changed to nth-child(3) to target "Latest Releases" or similar list structure, 
+    // as nth-child(1) is now a swiper/carousel
+    content.find(".bixbox:nth-child(3) > .listupd > .utao").each((id, el) => {
+      let imgTag = $(el).find(".uta > .imgu > a").find("img");
+      let img = imgTag.attr("data-src") || imgTag.attr("src") || imgTag.attr("data-lazy-src");
+
       let judul = $(el).find(".uta > .luf > a > h3").text().trim();
       let chapter = $(el)
         .find(".uta > .luf > ul > li:first-child > a")
@@ -69,7 +73,9 @@ app.get("/manga/v2/manga-update", (req, res) => {
     obj.url = url;
 
     content.find(".bixbox:nth-child(2) > .listupd > .utao").each((id, el) => {
-      let img = $(el).find(".uta > .imgu > a").find("img").attr("src");
+      let imgTag = $(el).find(".uta > .imgu > a").find("img");
+      let img = imgTag.attr("data-src") || imgTag.attr("src") || imgTag.attr("data-lazy-src");
+
       let judul = $(el).find(".uta > .luf > a > h3").text().trim();
       let chapter = $(el)
         .find(".uta > .luf > ul > li:first-child > a")
